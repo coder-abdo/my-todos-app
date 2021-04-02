@@ -1,0 +1,20 @@
+// variables
+$bg-blue: #4267b2;
+$blue: #294adb;
+// mixins
+@mixin flex($dir: row, $jc: flex-start, $ai: flex-start) {
+  display: flex;
+  flex-direction: $dir;
+  justify-content: $jc;
+  align-items: $ai;
+}
+%common {
+  padding: 0.5rem 1rem;
+  background-color: #fff;
+  font-family: var(--ff);
+  border: 1px solid $blue;
+  border-radius: 3px;
+  margin-bottom: 1rem;
+  max-width: 25rem;
+  width: 100%;
+}

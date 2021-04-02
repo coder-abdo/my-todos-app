@@ -1,0 +1,23 @@
+@import "../commons.scss";
+.navbar {
+  @include flex(row, space-evenly, center);
+  background-color: $bg-blue;
+  padding: 1rem 0;
+  .logo {
+    font-size: 1.8rem;
+  }
+  .navList {
+    list-style: none;
+    @include flex(row, space-between, center);
+    font-size: 1.4rem;
+  }
+  .navListItem {
+    &:not(:last-child) {
+      margin-right: 2rem;
+    }
+  }
+  a {
+    text-decoration: none;
+    color: #fff;
+  }
+}
