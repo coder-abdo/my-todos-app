@@ -1,19 +1,7 @@
 @import "../commons/commons.scss";
 // variables
-$blue: #294adb;
 $google-icon: #db4437;
 
-// hidden classes
-%common {
-  padding: 0.5rem 1rem;
-  background-color: #fff;
-  font-family: var(--ff);
-  border: 1px solid $blue;
-  border-radius: 3px;
-  margin-bottom: 1rem;
-  max-width: 25rem;
-  width: 100%;
-}
 /* style form here */
 .form {
   @include flex(column, center, center);
@@ -26,7 +14,11 @@ $google-icon: #db4437;
   font-size: 2.2rem;
   margin-bottom: 2rem;
 }
-
+.errMsg {
+  color: $google-icon;
+  margin: 0.5rem 0;
+  text-transform: uppercase;
+}
 .social {
   @include flex(row, flex-start, center);
   @extend %common;

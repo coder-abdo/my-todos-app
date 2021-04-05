@@ -1,7 +1,8 @@
-import express, { json, Request } from "express";
+import express, { json, Request, urlencoded } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
+import logger from "morgan";
 import session from "express-session";
 import mongoose, { CallbackError } from "mongoose";
 import { config } from "dotenv";
@@ -12,6 +13,7 @@ import { compare } from "bcryptjs";
 import User from "./models/User";
 import { IUser } from "./types";
 import authRouter from "./routes/user";
+import todoRouter from "./routes/todos";
 /**
  * @configure environment variables
  * */
@@ -24,6 +26,8 @@ const LocalStrategy = passportLocal.Strategy;
 const JwtStrategy = passportJwt.Strategy;
 /**@middlewares */
 app.use(json());
+app.use(urlencoded({ extended: false }));
+app.use(logger("dev"));
 app.use(cors());
 app.use(helmet());
 /**
@@ -51,27 +55,7 @@ const cookieExtractor = (req: Request): string | null => {
   }
   return token;
 };
-passport.use(
-  new JwtStrategy(
-    {
-      jwtFromRequest: cookieExtractor,
-      secretOrKey: `${process.env.JWT_SECRET}`,
-    },
-    (payload: any, done: VerifyCallback | any) => {
-      User.findOne(
-        { _id: payload.sub },
-        (err: CallbackError, user: IUser | null) => {
-          if (err) return done(err, false);
-          if (user) {
-            return done(null, user);
-          } else {
-            return done(null, false);
-          }
-        }
-      );
-    }
-  )
-);
+
 passport.use(
   new LocalStrategy((username: string, password: string, done: any) => {
     User.findOne(
@@ -93,6 +77,27 @@ passport.use(
       }
     );
   })
+);
+passport.use(
+  new JwtStrategy(
+    {
+      jwtFromRequest: cookieExtractor,
+      secretOrKey: `${process.env.JWT_SECRET}`,
+    },
+    async (payload: any, done: VerifyCallback | any) => {
+      await User.findOne(
+        { _id: payload._id },
+        (err: CallbackError, user: IUser | null) => {
+          if (err) return done(err, false);
+          if (user) {
+            return done(null, user);
+          } else {
+            return done(null, false);
+          }
+        }
+      );
+    }
+  )
 );
 passport.serializeUser(
   (user: Express.User | any, done: (err: unknown, id: any) => void) => {
@@ -128,6 +133,7 @@ app.get("/", (req, res) => {
   res.json({ message: "home page here !!" });
 });
 app.use(authRouter);
+app.use(todoRouter);
 mongoose.connect(
   mongoUrl,
   {

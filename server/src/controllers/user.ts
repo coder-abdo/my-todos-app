@@ -11,16 +11,22 @@ const register: RequestHandler = async (
   next: NextFunction
 ) => {
   const { email, username, password } = req.body;
+  const results = validationResult(req);
   try {
-    const existedUser = await User.findOne({ email });
+    if (!results.isEmpty()) {
+      let errs = results.array().map((err) => err.msg);
+      return res.status(400).json({ errors: errs });
+    }
+    const existedUser = await User.findOne({ username });
     if (existedUser) {
       return res.status(401).json({ error: "user is already exist" });
     }
-    const hashedPassword = await hash(password, 10);
+    const hashedPassword = await hash(password, 12);
     const user = new User({
       username,
       email,
       password: hashedPassword,
+      avatar: req.file.originalname,
     });
     await user.save();
     res.json({ message: "successfully registered" });
@@ -45,6 +51,21 @@ const login: RequestHandler = async (
     next(error);
   }
 };
+const getProfile: RequestHandler = async (req, res, next) => {
+  try {
+    const user = req.user as IUser;
+    if (user) {
+      const savedUser = await User.findOne({
+        _id: user._id,
+      }).populate("todos");
+      return res.json(savedUser);
+    } else {
+      return res.status(401).json({ message: "unauthorized" });
+    }
+  } catch (error: unknown) {
+    res.status(500).json({ message: "something went wrong" });
+  }
+};
 const logout: RequestHandler = (
   req: Request,
   res: Response,
@@ -54,4 +75,4 @@ const logout: RequestHandler = (
   req.logOut();
   res.json({ message: "successfully logout" });
 };
-export { register, login, logout };
+export { register, login, logout, getProfile };

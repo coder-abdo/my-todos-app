@@ -15,7 +15,18 @@
   font-size: 2.2rem;
   margin-bottom: 2rem;
 }
-
+.errsList {
+  list-style: none;
+  .errsListItem {
+    color: darkred;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+  }
+}
+.emailContainer {
+  width: 100%;
+  max-width: 25rem;
+}
 .input {
   @extend %common;
   font-size: 1.4rem;
@@ -23,6 +34,37 @@
     outline: none;
     box-shadow: 0 0 1rem 0 rgba($blue, 0.15);
   }
+}
+.fileContianer {
+  margin: 1rem 0;
+}
+.fileInput {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+  &:hover + .fileLabel,
+  &:focus + .fileLabel {
+    transform: scale(1.1);
+  }
+  &:focus + .fileLabel {
+    outline: 1px solid $blue;
+    outline: -webkit-focus-ring-color auto 2px;
+  }
+}
+.fileLabel {
+  position: relative;
+  width: 25rem;
+  height: 5rem;
+  background: $blue;
+  box-shadow: 0 4px 7px rgba($blue, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease-out;
 }
 .submitBtn {
   padding: 0.5rem 1rem;

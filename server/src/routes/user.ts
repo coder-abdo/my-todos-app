@@ -1,11 +1,14 @@
 import { Router } from "express";
 import passport from "passport";
 import { body } from "express-validator";
-import { login, logout, register } from "../controllers/user";
+import { getProfile, login, logout, register } from "../controllers/user";
 import { validatorMiddleWare } from "../middlewares/validatorMiddleware";
+import { upload } from "../middlewares/uploadImage";
 const router = Router();
+router.get("/user/profile", passport.authenticate("jwt"), getProfile);
 router.post(
   "/auth/register",
+  upload.single("avatar"),
   body("username")
     .not()
     .isEmpty()

@@ -5,4 +5,10 @@ export interface IUser extends Document {
   email: string;
   password: string;
   isAdmin?: boolean;
+  todos: ITodo[];
+}
+export interface ITodo extends Document {
+  title: string;
+  completed: boolean;
+  user: IUser;
 }

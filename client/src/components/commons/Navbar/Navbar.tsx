@@ -1,4 +1,5 @@
 import { observer } from "mobx-react-lite";
+import Cookie from "js-cookie";
 import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import { useStore } from "../../../store";
@@ -9,7 +10,7 @@ export const Navbar = observer(() => {
   const logout = () => {
     Axios.get("http://localhost:5000/auth/logout")
       .then(() => {
-        localStorage.removeItem("token");
+        Cookie.remove("token");
         store.saveToken(null);
       })
       .then(() => {

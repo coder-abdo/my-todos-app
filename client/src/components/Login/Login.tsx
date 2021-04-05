@@ -1,36 +1,41 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import Axios from "axios";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { observer } from "mobx-react-lite";
+import axios from "axios";
+import Cookie from "js-cookie";
 import { useHistory } from "react-router-dom";
 import styles from "./login.module.scss";
 import { SocialBtn } from "../commons/SocialBtn";
 import { useStore } from "../../store";
-import { observer } from "mobx-react-lite";
 export const Login = observer(() => {
   const history = useHistory();
   const store = useStore();
   const [user, setUser] = useState({ username: "", password: "" });
+  const [err, setError] = useState("");
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    Axios.post("http://localhost:5000/auth/login", user)
+    axios
+      .post("http://localhost:5000/auth/login", user)
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
+        Cookie.set("token", res.data.token);
         store.saveToken(res.data.token);
       })
       .then(() => {
         history.push("/");
       })
       .catch((err) => {
-        console.log(err);
-        throw err;
+        console.log(err?.response.data);
+        setError("username or passowrd invalid");
       });
+    setUser({ username: "", password: "" });
   };
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
       <h1 className={styles.title}> welcome back </h1>
+      {err && <h3 className={styles.errMsg}>{err}</h3>}
       <SocialBtn socialClass={styles.social}>
         <svg
           className={`${styles.socialIcon} ${styles.googleIcon}`}

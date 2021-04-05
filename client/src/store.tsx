@@ -1,7 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import { createContext, FC, useContext } from "react";
+import Cookie from "js-cookie";
 export class User {
-  token: string | null = localStorage.getItem("token") || null;
+  token: string | null = Cookie.get("token") || null;
   constructor() {
     makeAutoObservable(this);
   }

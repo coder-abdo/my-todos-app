@@ -5,6 +5,8 @@ const userSchema = new Schema({
   username: {
     type: String,
     required: true,
+    unique: true,
+    lowercase: true,
   },
   email: {
     type: String,
@@ -19,6 +21,16 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  avatar: {
+    type: String,
+    required: true,
+  },
+  todos: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Todo",
+    },
+  ],
 });
 
 const User = model<IUser>("User", userSchema);
